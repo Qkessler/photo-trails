@@ -35,6 +35,11 @@ test:
 test-watch:
     npx vitest
 
+# Tail the pipeline log
+logs:
+    @echo "Log file: $TMPDIR/photos-on-trails.log"
+    tail -f $TMPDIR/photos-on-trails.log
+
 # Build for production
 build:
     npx vite build

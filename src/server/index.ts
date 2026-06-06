@@ -21,6 +21,8 @@ app.post("/api/import-gpx", upload.fields([
   { name: "gpx", maxCount: 1 },
   { name: "photos", maxCount: 100 },
 ]), async (req: Request, res: Response) => {
+  const start = Date.now();
+  console.log(`[import-gpx] Request received`);
   try {
     const files = req.files as Record<string, Express.Multer.File[]> | undefined;
     const gpxFile = files?.gpx?.[0];
@@ -35,6 +37,7 @@ app.post("/api/import-gpx", upload.fields([
 
     const result = await importGPX(gpxString, photoFiles);
     currentState = result.state;
+    console.log(`[import-gpx] Complete in ${Date.now() - start}ms`);
 
     res.json({
       photoSource: result.photoSource,

@@ -1,6 +1,7 @@
 import path from "node:path";
 import os from "node:os";
 import fs from "node:fs/promises";
+import { appendFileSync } from "node:fs";
 import { parseGPX } from "../core/gpx-parser.js";
 import { matchPhotosToRoute } from "../core/photo-route-matcher.js";
 import { clusterPhotos } from "../core/photo-clusterer.js";
@@ -8,6 +9,14 @@ import { queryPhotos, PhotosBridgeError } from "./photos-bridge.js";
 import { extractMetadata } from "./photos-manual.js";
 import { exportStatic } from "./static-exporter.js";
 import type { ActivityData, PhotoMetadata, RouteSegment } from "../core/types.js";
+
+const LOG_FILE = path.join(os.tmpdir(), "photos-on-trails.log");
+
+function log(msg: string): void {
+  const line = `[${new Date().toISOString()}] ${msg}`;
+  console.log(line);
+  appendFileSync(LOG_FILE, line + "\n");
+}
 
 export interface PipelineState {
   segments: RouteSegment[];
@@ -29,7 +38,10 @@ export async function importGPX(
   gpxString: string,
   manualPhotos?: { buffer: Buffer; filename: string }[],
 ): Promise<ImportGPXResult> {
+  log(`Import started. GPX size: ${gpxString.length} bytes, manual photos: ${manualPhotos?.length ?? 0}`);
+
   const { trackpoints, segments } = await parseGPX(gpxString);
+  log(`GPX parsed: ${trackpoints.length} trackpoints, ${segments.length} segments`);
 
   if (trackpoints.length === 0) {
     throw new PipelineError("GPX file contains no valid trackpoints.", "EMPTY_GPX");
@@ -37,6 +49,7 @@ export async function importGPX(
 
   const routeStart = trackpoints[0].timestamp;
   const routeEnd = trackpoints[trackpoints.length - 1].timestamp;
+  log(`Route time range: ${new Date(routeStart).toISOString()} → ${new Date(routeEnd).toISOString()}`);
   const warnings: string[] = [];
 
   let photos: PhotoMetadata[];
@@ -44,18 +57,23 @@ export async function importGPX(
   let photoSource: "apple-photos" | "manual-fallback";
 
   if (manualPhotos && manualPhotos.length > 0) {
+    log(`Using ${manualPhotos.length} manually provided photos`);
     const result = await importManualPhotos(manualPhotos);
     photos = result.photos;
     photoSourceDir = result.exportDir;
     photoSource = "manual-fallback";
+    log(`Manual photos imported to ${photoSourceDir}`);
   } else {
+    log(`Querying Apple Photos (buffer: ±${BUFFER_MINUTES} min)...`);
     try {
       const result = await queryPhotos({ startTime: routeStart, endTime: routeEnd, bufferMinutes: BUFFER_MINUTES });
       photos = result.photos;
       photoSourceDir = result.exportDir;
       photoSource = "apple-photos";
+      log(`Apple Photos returned ${photos.length} photos, exported to ${photoSourceDir}`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
+      log(`Apple Photos failed: ${msg}`);
       if (err instanceof PhotosBridgeError && err.code === "NO_PHOTOS") {
         warnings.push("No photos found in Apple Photos for this time range.");
       } else if (err instanceof PhotosBridgeError && err.code === "PERMISSION_DENIED") {
@@ -69,7 +87,10 @@ export async function importGPX(
     }
   }
 
+  log(`Building activity (${photos.length} photos)...`);
   const activity = buildActivity(trackpoints, segments, photos);
+  log(`Activity built: ${activity.clusters.length} clusters, ${activity.unplaced.length} unplaced`);
+  log(`Import complete. Log file: ${LOG_FILE}`);
 
   return {
     state: { segments, photos, activity, photoSourceDir },

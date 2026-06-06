@@ -13,6 +13,14 @@ export default defineConfig({
       "@server": resolve(__dirname, "src/server"),
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        viewer: resolve(__dirname, "viewer.html"),
+      },
+    },
+  },
   server: {
     port: 3000,
   },

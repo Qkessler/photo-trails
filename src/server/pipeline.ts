@@ -55,19 +55,17 @@ export async function importGPX(
       photoSourceDir = result.exportDir;
       photoSource = "apple-photos";
     } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
       if (err instanceof PhotosBridgeError && err.code === "NO_PHOTOS") {
         warnings.push("No photos found in Apple Photos for this time range.");
-        photos = [];
-        photoSourceDir = await fs.mkdtemp(path.join(os.tmpdir(), "photos-on-trails-empty-"));
-        photoSource = "apple-photos";
       } else if (err instanceof PhotosBridgeError && err.code === "PERMISSION_DENIED") {
         warnings.push("Apple Photos access denied. Drop photos manually or grant Automation permission.");
-        photos = [];
-        photoSourceDir = await fs.mkdtemp(path.join(os.tmpdir(), "photos-on-trails-empty-"));
-        photoSource = "apple-photos";
       } else {
-        throw err;
+        warnings.push(`Apple Photos unavailable: ${msg}. Drop photos manually.`);
       }
+      photos = [];
+      photoSourceDir = await fs.mkdtemp(path.join(os.tmpdir(), "photos-on-trails-empty-"));
+      photoSource = "apple-photos";
     }
   }
 

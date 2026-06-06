@@ -77,7 +77,7 @@ export function buildJXAScript(startDate: string, endDate: string, exportDir: st
 
 export function runOsascript(script: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    execFile("osascript", ["-l", "JavaScript", "-e", script], { timeout: 120_000 }, (error, stdout, stderr) => {
+    execFile("osascript", ["-l", "JavaScript", "-e", script], { timeout: 60_000 }, (error, stdout, stderr) => {
       if (error) {
         const msg = stderr || error.message;
         if (msg.includes("not allowed") || msg.includes("permission") || msg.includes("-1743")) {

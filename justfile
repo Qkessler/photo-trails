@@ -9,9 +9,21 @@ clean-ports:
 # Run the full dev environment (API server + Vite frontend with HMR)
 dev: clean-ports
     #!/usr/bin/env bash
+    set -e
     trap 'kill 0' EXIT
-    PORT=3001 npm run dev:server &
-    sleep 1
+    PORT=3001 npm run dev:server 2>&1 | sed 's/^/[server] /' &
+    echo "Waiting for API server..."
+    for i in $(seq 1 10); do
+      if curl -s -o /dev/null http://localhost:3001/api/activity 2>/dev/null; then
+        echo "API server ready on :3001"
+        break
+      fi
+      if [ $i -eq 10 ]; then
+        echo "ERROR: API server failed to start on port 3001"
+        exit 1
+      fi
+      sleep 1
+    done
     npm run dev &
     wait
 

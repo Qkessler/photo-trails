@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="photos-on-trails-test"
+  xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Test Trail</name>
+    <trkseg>
+      <trkpt lat="37.7749" lon="-122.4194">
+        <ele>10</ele>
+        <time>2026-01-15T10:00:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7750" lon="-122.4180">
+        <ele>12</ele>
+        <time>2026-01-15T10:01:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7752" lon="-122.4165">
+        <ele>15</ele>
+        <time>2026-01-15T10:02:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7755" lon="-122.4150">
+        <ele>18</ele>
+        <time>2026-01-15T10:03:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7758" lon="-122.4135">
+        <ele>20</ele>
+        <time>2026-01-15T10:04:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7760" lon="-122.4120">
+        <ele>22</ele>
+        <time>2026-01-15T10:05:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7763" lon="-122.4105">
+        <ele>25</ele>
+        <time>2026-01-15T10:06:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7765" lon="-122.4090">
+        <ele>28</ele>
+        <time>2026-01-15T10:07:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7768" lon="-122.4075">
+        <ele>30</ele>
+        <time>2026-01-15T10:08:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7770" lon="-122.4060">
+        <ele>32</ele>
+        <time>2026-01-15T10:09:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7773" lon="-122.4045">
+        <ele>35</ele>
+        <time>2026-01-15T10:10:00Z</time>
+      </trkpt>
+      <!-- Gap: 2 minute break -->
+      <trkpt lat="37.7775" lon="-122.4030">
+        <ele>37</ele>
+        <time>2026-01-15T10:12:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7778" lon="-122.4015">
+        <ele>40</ele>
+        <time>2026-01-15T10:13:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7780" lon="-122.4000">
+        <ele>42</ele>
+        <time>2026-01-15T10:14:00Z</time>
+      </trkpt>
+      <trkpt lat="37.7783" lon="-122.3985">
+        <ele>45</ele>
+        <time>2026-01-15T10:15:00Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

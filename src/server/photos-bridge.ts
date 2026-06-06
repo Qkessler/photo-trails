@@ -77,10 +77,16 @@ export function buildJXAScript(startDate: string, endDate: string, exportDir: st
 
 export function runOsascript(script: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    execFile("osascript", ["-l", "JavaScript", "-e", script], { timeout: 15_000 }, (error, stdout, stderr) => {
+    execFile("osascript", ["-l", "JavaScript", "-e", script], { timeout: 90_000 }, (error, stdout, stderr) => {
       if (error) {
         const msg = stderr || error.message;
-        if (msg.includes("not allowed") || msg.includes("permission") || msg.includes("-1743")) {
+        console.error(`[photos-bridge] osascript error: code=${error.code} signal=${error.signal} msg=${msg}`);
+        if (error.signal === "SIGTERM" || error.killed) {
+          reject(new PhotosBridgeError(
+            `osascript timed out after 90s. The photo library may be too large for the date-range scan. Drop photos manually instead.`,
+            "OSASCRIPT_FAILED",
+          ));
+        } else if (msg.includes("not allowed") || msg.includes("-1743")) {
           reject(new PhotosBridgeError(
             "Photos access denied. Grant automation permission in System Settings > Privacy & Security > Automation.",
             "PERMISSION_DENIED",

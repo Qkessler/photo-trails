@@ -1,0 +1,44 @@
+.photo-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.photo-marker__frame {
+  position: relative;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  line-height: 0;
+}
+
+.photo-marker__frame img {
+  display: block;
+  object-fit: cover;
+}
+
+.photo-marker__frame--cluster {
+  border-color: #ffd700;
+}
+
+.photo-marker__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #e63946;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.photo-marker--highlight .photo-marker__frame {
+  border-color: #00b4d8;
+  box-shadow: 0 0 8px rgba(0, 180, 216, 0.6);
+}

@@ -24,7 +24,7 @@ describe("Visual Integration Test — Pipeline", () => {
 
   beforeAll(async () => {
     const gpxString = await fs.readFile(path.join(FIXTURES_DIR, "sample-route.gpx"), "utf-8");
-    const { trackpoints, segments } = parseGPX(gpxString);
+    const { trackpoints, segments } = await parseGPX(gpxString);
 
     const photoFilenames = ["photo-start.jpg", "photo-midway.jpg", "photo-end.jpg"];
     photos = await Promise.all(

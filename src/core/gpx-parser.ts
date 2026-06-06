@@ -2,12 +2,21 @@ import { Trackpoint, RouteSegment } from "./types";
 
 const GAP_THRESHOLD_MS = 60_000;
 
-export function parseGPX(gpxString: string): {
+let linkedom: any = null;
+
+async function getDocument(gpxString: string): Promise<Document> {
+  if (typeof DOMParser !== "undefined") {
+    return new DOMParser().parseFromString(gpxString, "application/xml");
+  }
+  if (!linkedom) linkedom = await import("linkedom");
+  return linkedom.parseHTML(gpxString).document;
+}
+
+export async function parseGPX(gpxString: string): Promise<{
   trackpoints: Trackpoint[];
   segments: RouteSegment[];
-} {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(gpxString, "application/xml");
+}> {
+  const doc = await getDocument(gpxString);
 
   const parseError = doc.querySelector("parsererror");
   if (parseError) {

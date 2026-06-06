@@ -51,6 +51,14 @@ app.post("/api/import-gpx", upload.fields([
   }
 });
 
+app.get("/api/activity", (_req: Request, res: Response) => {
+  if (!currentState) {
+    res.status(404).json({ error: "No activity loaded. Import a GPX file first." });
+    return;
+  }
+  res.json(currentState.activity);
+});
+
 app.get("/api/photos", (_req: Request, res: Response) => {
   if (!currentState) {
     res.status(404).json({ error: "No activity loaded. Import a GPX file first." });

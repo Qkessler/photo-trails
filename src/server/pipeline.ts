@@ -29,7 +29,7 @@ export async function importGPX(
   gpxString: string,
   manualPhotos?: { buffer: Buffer; filename: string }[],
 ): Promise<ImportGPXResult> {
-  const { trackpoints, segments } = parseGPX(gpxString);
+  const { trackpoints, segments } = await parseGPX(gpxString);
 
   if (trackpoints.length === 0) {
     throw new PipelineError("GPX file contains no valid trackpoints.", "EMPTY_GPX");

@@ -16,13 +16,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "index.html"),
+        editor: resolve(__dirname, "index.html"),
         viewer: resolve(__dirname, "viewer.html"),
-        editor: resolve(__dirname, "editor.html"),
       },
     },
   },
   server: {
     port: 3000,
+    strictPort: true,
+    proxy: {
+      "/api": "http://localhost:3001",
+    },
   },
 });

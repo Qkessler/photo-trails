@@ -18,14 +18,24 @@ import {
 
 const API_BASE = "/api";
 
-async function loadActivityData(): Promise<ActivityData> {
-  const res = await fetch(`${API_BASE}/activity`);
-  if (!res.ok) {
+async function loadActivityData(): Promise<ActivityData | null> {
+  try {
+    const res = await fetch(`${API_BASE}/activity`);
+    if (res.ok) {
+      const ct = res.headers.get("content-type") || "";
+      if (ct.includes("application/json")) return res.json();
+    }
+  } catch { /* server not available */ }
+
+  try {
     const fallback = await fetch("activity.json");
-    if (!fallback.ok) throw new Error(`No activity data available (${res.status})`);
-    return fallback.json();
-  }
-  return res.json();
+    if (fallback.ok) {
+      const ct = fallback.headers.get("content-type") || "";
+      if (ct.includes("application/json")) return fallback.json();
+    }
+  } catch { /* no fallback */ }
+
+  return null;
 }
 
 function showStatus(message: string, isError = false): void {
@@ -73,6 +83,91 @@ async function exportActivity(state: EditorState, activity: ActivityData): Promi
 
 async function init(): Promise<void> {
   const data = await loadActivityData();
+
+  if (!data) {
+    showDropZone();
+    return;
+  }
+
+  renderActivity(data);
+}
+
+function showDropZone(): void {
+  const app = document.getElementById("app")!;
+  app.innerHTML = `
+    <div id="drop-zone" style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:1.5rem;">
+      <div style="border:2px dashed #555;border-radius:12px;padding:3rem 4rem;text-align:center;cursor:pointer;transition:border-color 0.2s;max-width:500px;" id="drop-area">
+        <p style="font-size:1.2rem;margin-bottom:0.5rem;">Drop a GPX file + photos here</p>
+        <p style="font-size:0.85rem;color:#888;margin-bottom:1rem;">or click to select files</p>
+        <p style="font-size:0.75rem;color:#666;">Select a .gpx file and optionally any photos (.jpg, .jpeg, .heic, .png).<br/>If no photos are dropped, we'll try Apple Photos automatically.</p>
+        <input type="file" accept=".gpx,.jpg,.jpeg,.heic,.png" multiple id="file-input" style="display:none;" />
+      </div>
+    </div>
+  `;
+
+  const dropArea = document.getElementById("drop-area")!;
+  const input = document.getElementById("file-input") as HTMLInputElement;
+
+  dropArea.addEventListener("click", () => input.click());
+  dropArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropArea.style.borderColor = "#4f9cf7";
+  });
+  dropArea.addEventListener("dragleave", () => {
+    dropArea.style.borderColor = "#555";
+  });
+  dropArea.addEventListener("drop", async (e) => {
+    e.preventDefault();
+    dropArea.style.borderColor = "#555";
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) await uploadFiles(files);
+  });
+  input.addEventListener("change", async () => {
+    if (input.files && input.files.length > 0) await uploadFiles(input.files);
+  });
+}
+
+async function uploadFiles(files: FileList): Promise<void> {
+  const gpxFile = Array.from(files).find((f) => f.name.toLowerCase().endsWith(".gpx"));
+  if (!gpxFile) {
+    alert("Please include a .gpx file.");
+    return;
+  }
+
+  const photoFiles = Array.from(files).filter((f) =>
+    /\.(jpe?g|heic|png)$/i.test(f.name)
+  );
+
+  const formData = new FormData();
+  formData.append("gpx", gpxFile);
+  for (const photo of photoFiles) {
+    formData.append("photos", photo);
+  }
+
+  const app = document.getElementById("app")!;
+  app.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100vh;"><p>Loading activity...</p></div>`;
+
+  try {
+    const res = await fetch(`${API_BASE}/import-gpx`, { method: "POST", body: formData });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: "Import failed" }));
+      throw new Error(err.error || "Import failed");
+    }
+
+    const data = await loadActivityData();
+    if (!data) throw new Error("Activity data not available after import");
+    
+    app.innerHTML = `<div id="map" style="flex:1;min-height:0;position:relative;"></div><div id="filmstrip-container"></div>`;
+    app.style.display = "flex";
+    app.style.flexDirection = "column";
+    app.style.height = "100vh";
+    renderActivity(data);
+  } catch (err: any) {
+    app.innerHTML = `<div style="padding:2rem;text-align:center;color:#f87171;"><h2>Import failed</h2><pre>${err.message}</pre></div>`;
+  }
+}
+
+function renderActivity(data: ActivityData): void {
   const editorState = new EditorState();
 
   const mapContainer = document.getElementById("map")!;

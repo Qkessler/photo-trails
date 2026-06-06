@@ -50,15 +50,7 @@ export function createRouteLayer(
     maxZoom: TILE_LAYERS.esriSatellite.maxZoom,
   });
 
-  topoLayer.addTo(map);
-
-  L.control
-    .layers(
-      { Topo: topoLayer, Satellite: satelliteLayer },
-      {},
-      { position: "topright" }
-    )
-    .addTo(map);
+  satelliteLayer.addTo(map);
 
   const polylines: L.Polyline[] = [];
   const allLatLngs: L.LatLng[] = [];

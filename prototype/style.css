@@ -1,0 +1,161 @@
+/* PROTOTYPE — throwaway styles */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+#app { height: 100%; }
+
+/* ─── Variant A: Full-bleed map ─── */
+
+.va-header {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 16px 24px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+  color: white;
+}
+.va-header h1 { font-size: 1.5rem; font-weight: 700; }
+.va-meta { font-size: 0.85rem; opacity: 0.85; }
+.va-map { position: absolute; inset: 0; }
+
+.photo-marker { background: none; border: none; }
+.photo-marker-inner {
+  width: 48px; height: 48px; border-radius: 50%; overflow: hidden;
+  border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  position: relative; cursor: pointer;
+  transition: transform 0.15s;
+}
+.photo-marker-inner:hover { transform: scale(1.2); }
+.photo-marker-inner img { width: 100%; height: 100%; object-fit: cover; }
+.marker-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: #e63946; color: white; font-size: 11px; font-weight: 700;
+  width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── Variant B: Split panel ─── */
+
+.vb-layout { display: flex; height: 100%; }
+.vb-map-pane { flex: 1; position: relative; }
+.vb-map { position: absolute; inset: 0; }
+.vb-sidebar {
+  width: 360px; overflow-y: auto; background: #fafafa;
+  border-left: 1px solid #e0e0e0; display: flex; flex-direction: column;
+}
+.vb-header { padding: 20px; border-bottom: 1px solid #e0e0e0; }
+.vb-header h1 { font-size: 1.25rem; margin-bottom: 4px; }
+.vb-meta { font-size: 0.8rem; color: #666; }
+.vb-photo-list { flex: 1; overflow-y: auto; padding: 12px; }
+.vb-photo-card {
+  display: flex; gap: 12px; padding: 12px; margin-bottom: 8px;
+  border-radius: 8px; cursor: pointer; transition: background 0.15s;
+}
+.vb-photo-card:hover { background: #eee; }
+.vb-photo-card img { width: 64px; height: 64px; border-radius: 6px; object-fit: cover; }
+.vb-photo-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.vb-time { font-size: 0.75rem; color: #999; }
+.vb-caption { font-size: 0.85rem; color: #333; }
+.vb-badge {
+  display: inline-block; background: #e63946; color: white; font-size: 0.7rem;
+  padding: 2px 6px; border-radius: 10px; width: fit-content;
+}
+
+/* ─── Variant C: Film strip ─── */
+
+.vc-layout { display: flex; flex-direction: column; height: 100%; }
+.vc-map-area { flex: 1; position: relative; }
+.vc-map { position: absolute; inset: 0; }
+.vc-overlay-title {
+  position: absolute; top: 16px; left: 16px; z-index: 1000;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+  padding: 12px 18px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+.vc-overlay-title h1 { font-size: 1.1rem; font-weight: 700; }
+.vc-overlay-title span { font-size: 0.75rem; color: #666; }
+.vc-filmstrip {
+  height: 110px; background: #111; display: flex; gap: 8px;
+  padding: 12px 16px; overflow-x: auto; align-items: center;
+  scrollbar-width: thin;
+}
+.vc-thumb {
+  flex-shrink: 0; position: relative; cursor: pointer;
+  border-radius: 6px; overflow: hidden; transition: transform 0.15s;
+}
+.vc-thumb:hover { transform: scale(1.08); }
+.vc-thumb img { width: 80px; height: 80px; object-fit: cover; display: block; }
+.vc-thumb-time {
+  position: absolute; bottom: 4px; left: 4px;
+  font-size: 0.65rem; color: white; background: rgba(0,0,0,0.6);
+  padding: 1px 5px; border-radius: 3px;
+}
+
+/* ─── Rectangular photo markers (variant C) ─── */
+
+.rect-marker { background: none; border: none; }
+.rect-marker .rect-marker-inner {
+  position: absolute; inset: 0;
+  border-radius: 4px; overflow: hidden;
+  outline: 2.5px solid white; outline-offset: -1px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.rect-marker .rect-marker-inner:hover { transform: scale(1.15); }
+.rect-marker.marker-highlight { z-index: 1000 !important; }
+.rect-marker.marker-highlight .rect-marker-inner { transform: scale(1.3); }
+.rect-marker .rect-marker-inner img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.rect-marker-inner .marker-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: #e63946; color: white; font-size: 10px; font-weight: 700;
+  width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── Dot markers (variant B) ─── */
+
+.dot-marker { background: none; border: none; }
+.dot-marker-inner {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #e63946; border: 2px solid white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: white; font-weight: 700; cursor: pointer;
+}
+
+/* ─── Lightbox ─── */
+
+.lightbox { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.lightbox.hidden { display: none; }
+.lightbox-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.85); }
+.lightbox-content { position: relative; max-width: 90vw; max-height: 85vh; }
+.lightbox-content img { max-width: 100%; max-height: 75vh; border-radius: 8px; display: block; }
+.lightbox-info { margin-top: 12px; color: white; text-align: center; }
+.lightbox-time { font-size: 0.8rem; opacity: 0.7; margin-right: 12px; }
+.lightbox-caption { font-size: 1rem; }
+.lightbox-close {
+  position: absolute; top: -12px; right: -12px;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: white; color: #333; font-size: 1.2rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ─── Prototype Switcher ─── */
+
+#prototype-switcher {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 99999;
+  display: flex; align-items: center; gap: 12px;
+  background: #1a1a2e; color: white; padding: 10px 20px;
+  border-radius: 999px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  font-size: 0.85rem; font-weight: 500;
+  user-select: none;
+}
+.sw-arrow {
+  background: rgba(255,255,255,0.15); border: none; color: white;
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+  font-size: 1rem; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.sw-arrow:hover { background: rgba(255,255,255,0.3); }
+.sw-label { min-width: 140px; text-align: center; }

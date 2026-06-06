@@ -1,0 +1,21 @@
+{
+  "name": "photos-on-trails",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "sharp": "^0.33.2"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.8",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6",
+    "vitest": "^1.4.0"
+  }
+}

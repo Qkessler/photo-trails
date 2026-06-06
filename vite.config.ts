@@ -2,6 +2,9 @@ import { defineConfig } from "vite";
 import { resolve } from "path";
 
 export default defineConfig({
+  test: {
+    environment: "jsdom",
+  },
   resolve: {
     alias: {
       "@core": resolve(__dirname, "src/core"),

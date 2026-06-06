@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { photosManualRouter } from "./photos-manual.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "../..");
@@ -9,6 +10,7 @@ const app = express();
 const PORT = parseInt(process.env.PORT || "3000", 10);
 
 app.use(express.json());
+app.use(photosManualRouter);
 
 app.post("/api/import-gpx", (_req: Request, res: Response) => {
   res.status(501).json({ error: "Not implemented — depends on GPX parser (T3) and Photos Bridge (T17)" });

@@ -105,7 +105,7 @@ async function processPhotos(
   return count;
 }
 
-function buildActivityJson(activity: ActivityData, photosDir: string): ActivityData {
+export function buildActivityJson(activity: ActivityData, photosDir: string): ActivityData {
   const clusters = activity.clusters.map((cluster) => ({
     ...cluster,
     photos: cluster.photos.map((placed) => {
